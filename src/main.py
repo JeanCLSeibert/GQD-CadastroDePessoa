@@ -1,6 +1,14 @@
 """Sistema de Cadastro de Pessoas."""
 
 from cadastro import CadastroPessoa
+from repositorio_pessoas_mysql import RepositorioPessoasMySQL
+from repositorio_pessoas_memoria import RepositorioPessoasMemoria
+USAR_MYSQL = True
+
+def criarRepositorio():
+    if USAR_MYSQL:
+        return RepositorioPessoasMySQL.aPartirDoAmbiente()
+    return RepositorioPessoasMemoria()
 
 def printMenu():
     print("=========================")
@@ -50,17 +58,26 @@ def consultarPessoa(cadastro):
 
 def alterarPessoa(cadastro):
     """Altera as informações de uma pessoa"""
+
     busca = input("Nome para alterar: ")
+
     pessoa = cadastro.buscarPorNome(busca)
+
     if pessoa is None:
         print("Não encontrado")
+        return
+
+    exibirPessoa(pessoa)
+
+    nome = input("Novo nome: ")
+    idade = int(input("Nova idade: "))
+    email = input("Novo e-mail: ")
+
+    pessoaAlterada = cadastro.alterar(busca, nome, idade, email)
+    if pessoaAlterada is None:
+        print("Não foi possível alterar a pessoa")
     else:
-        exibirPessoa(pessoa)
-        nome = input("Novo nome: ")
-        idade = int(input("Nova idade: "))
-        email = input("Novo e-mail: ")
-        cadastro.alterar(busca, nome, idade, email)
-        print("Alterado pessoa")
+        print("Pessoa alterada")
         exibirPessoa(pessoa)
 
 def listarPessoas(cadastro):
@@ -140,7 +157,7 @@ def analisarPessoa(cadastro):
 
 def main():
     """Executa o loop de menu do programa"""
-    cadastro = CadastroPessoa()
+    cadastro = CadastroPessoa(criarRepositorio())
 
     op = 0
 

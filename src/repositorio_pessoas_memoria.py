@@ -1,19 +1,25 @@
 from typing import List, Optional
 from pessoa import Pessoa
 from repositorio_pessoas import RepositorioPessoas
+
 class RepositorioPessoasMemoria(RepositorioPessoas):
     """docstring memoria"""
+
     def __init__(self) -> None:
         self.__pessoas: List[Pessoa] = []
+
     def cadastrar(self, pessoa: Pessoa) -> None:
         self.__pessoas.append(pessoa)
+
     def buscar(self, nome: str) -> Optional[Pessoa]:
         for pessoa in self.__pessoas:
             if pessoa.getNome() == nome:
                 return pessoa
         return None
+
     def listar(self) -> List[Pessoa]:
         return list(self.__pessoas)
+
     def alterar(self, nome: str, novaPessoa: Pessoa) -> bool:
         for indice, pessoa in enumerate(self.__pessoas):
             if pessoa.getNome() == nome:
